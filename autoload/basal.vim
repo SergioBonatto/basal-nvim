@@ -131,12 +131,11 @@ endfunction
 " Find files linking to current note
 function! basal#backlinks()
   let l:filename = fnamemodify(expand('%'), ':t:r')
-  if empty(l:filename)
-    return
-  endif
+  if empty(l:filename) | return | endif
 
-  " Search for [[filename]] or (filename.md) or (filename)
-  let l:pattern = '\[\[' . l:filename . '\]\]|(\(' . l:filename . '\.md\)|\(' . l:filename . '\))'
+  " Use character classes for literals to avoid backslash escaping issues across layers
+  " Matches: [[filename]], (filename.md), or (filename)
+  let l:pattern = '[[]' . l:filename . '[]]|[(]' . l:filename . '[.]md[)]|[(]' . l:filename . '[)]'
   call basal#search(l:pattern, 0)
 endfunction
 
