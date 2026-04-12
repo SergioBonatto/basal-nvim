@@ -3,7 +3,7 @@ if exists('g:loaded_basal')
 endif
 let g:loaded_basal = 1
 
-let g:basal_path = get(g:, 'basal_path', expand('~/basal-brain'))
+let g:basal_path = get(g:, 'basal_path', expand('~/Basal'))
 let $BASAL = g:basal_path
 
 " Path & Link settings
