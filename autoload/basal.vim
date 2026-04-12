@@ -131,8 +131,10 @@ endfunction
 " Find files linking to current note
 function! basal#backlinks()
   let l:filename = fnamemodify(expand('%'), ':t:r')
-  " Search for [[filename]] or [text](filename.md) or just the filename in MD links
-  let l:pattern = '\(\[\[\|(\)' . l:filename . '\(\]\]\|.md)\)'
+  if empty(l:filename) | return | endif
+
+  " Search for [[filename]] or (filename.md) or (filename)
+  let l:pattern = '\[\[' . l:filename . '\]\]|\(' . l:filename . '(\.md)?\)'
   let l:command = 'rg --column --line-number --no-heading --color=always --smart-case -e ' . shellescape(l:pattern) . ' -- '
   let l:spec = fzf#vim#with_preview({'dir': expand($BASAL)})
   call fzf#vim#grep(l:command, 1, l:spec, 0)
