@@ -60,9 +60,10 @@ endfunction
 
 " Search within the brain using ripgrep and fzf
 function! basal#search(query, bang)
+  let l:dir = expand($BASAL)
   let l:pattern = (a:query =~ '^#') ? a:query . '\b' : a:query
-  let l:command = 'rg --column --line-number --no-heading --color=always --smart-case -e ' . shellescape(l:pattern) . ' -- '
-  let l:spec = fzf#vim#with_preview({'dir': expand($BASAL)})
+  let l:command = 'rg --column --line-number --no-heading --color=always --smart-case -e ' . shellescape(l:pattern) . ' ' . shellescape(l:dir)
+  let l:spec = fzf#vim#with_preview({'dir': l:dir})
   call fzf#vim#grep(l:command, 1, l:spec, a:bang)
 endfunction
 
