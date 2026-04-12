@@ -1,3 +1,5 @@
+let s:plugin_root = expand('<sfile>:p:h:h')
+
 function! basal#init()
   let l:target_dir = fnamemodify(expand($BASAL), ':p')
   
@@ -6,8 +8,7 @@ function! basal#init()
     return
   endif
 
-  let l:plugin_root = fnamemodify(expand('<sfile>:p'), ':h:h')
-  let l:skeleton_dir = l:plugin_root . '/skeleton'
+  let l:skeleton_dir = s:plugin_root . '/skeleton'
 
   if !isdirectory(l:skeleton_dir)
     echoerr "Basal: Skeleton source not found at " . l:skeleton_dir
@@ -25,4 +26,11 @@ function! basal#init()
     echom "Basal: Brain initialized at " . l:target_dir
     execute 'e ' . l:target_dir . '/index.md'
   endif
+endfunction
+
+function! basal#search(query, bang)
+  let l:pattern = (a:query =~ '^#') ? a:query . '\b' : a:query
+  let l:command = 'rg --column --line-number --no-heading --color=always --smart-case -e ' . shellescape(l:pattern) . ' -- '
+  let l:spec = fzf#vim#with_preview({'dir': expand($BASAL)})
+  call fzf#vim#grep(l:command, 1, l:spec, a:bang)
 endfunction
