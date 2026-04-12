@@ -40,19 +40,21 @@ function! basal#init()
   endif
 
   try
-    call mkdir(l:target_dir, "p")
-    " Portable copy: use netrw or system call but check for success
-    let l:cmd = 'cp -R ' . shellescape(l:skeleton_dir) . '/. ' . shellescape(l:target_dir)
+    " Use cp -R of the source directory itself into the parent of target
+    let l:parent_dir = fnamemodify(l:target_dir, ':h')
+    if !isdirectory(l:parent_dir) | call mkdir(l:parent_dir, 'p') | endif
+    
+    let l:cmd = 'cp -R ' . shellescape(l:skeleton_dir) . ' ' . shellescape(l:target_dir)
     call system(l:cmd)
     
     if v:shell_error
-      echoerr "Basal: Copy failed. Check permissions for " . l:target_dir
+      echoerr "Basal: Copy failed. Check permissions for " . l:parent_dir
     else
       echom "Basal: Brain initialized at " . l:target_dir
       execute 'e ' . l:target_dir . '/index.md'
     endif
   catch
-    echoerr "Basal: Failed to create directory " . l:target_dir
+    echoerr "Basal: Initialization failed. " . v:exception
   endtry
 endfunction
 
