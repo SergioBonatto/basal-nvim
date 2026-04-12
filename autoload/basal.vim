@@ -62,7 +62,8 @@ endfunction
 function! basal#search(query, bang)
   let l:dir = expand($BASAL)
   let l:pattern = (a:query =~ '^#') ? a:query . '\b' : a:query
-  let l:command = 'rg --column --line-number --no-heading --color=always --smart-case -e ' . shellescape(l:pattern) . ' ' . shellescape(l:dir)
+  let l:rg = 'rg --column --line-number --no-heading --color=always --smart-case -e '
+  let l:command = l:rg . shellescape(l:pattern) . ' ' . shellescape(l:dir) . '; (exit $(( $? == 2 ? 2 : 0 )))'
   let l:spec = fzf#vim#with_preview({'dir': l:dir})
   call fzf#vim#grep(l:command, 1, l:spec, a:bang)
 endfunction
