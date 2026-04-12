@@ -1,11 +1,11 @@
 " Basal custom syntax for Markdown files within the brain
 if empty($BASAL) | finish | endif
 
-let l:current_file = expand('%:p')
-let l:brain_path = expand($BASAL)
+let s:current_file = expand('%:p')
+let s:brain_path = expand($BASAL)
 
 " Only apply if the file is inside the Basal directory
-if l:current_file !~# '^' . l:brain_path
+if s:current_file !~# '^' . s:brain_path
   finish
 endif
 
