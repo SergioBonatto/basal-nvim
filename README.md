@@ -34,56 +34,69 @@ Execute within Vim:
 :BasalInit
 ```
 
-This command creates the target directory, scaffolds the P.A.R.A. structure, and populates the root with system files (`index.md`, `meta.md`, `inbox.md`, `TODO.md`, etc.) from the plugin skeleton.
+This command creates the target directory, scaffolds the P.A.R.A. structure, and populates the root with system files from the plugin skeleton.
 
 ## Directory Structure
 
-The system organizes information into the following hierarchy:
-
-* `0_Projects/`: Active projects with defined objectives and deadlines.
-* `1_Areas/`: Ongoing responsibilities requiring a standard of performance.
+* `0_Projects/`: Active projects with defined objectives.
+* `1_Areas/`: Ongoing responsibilities.
 * `2_Resources/`: Knowledge library and reference material.
-* `3_Archives/`: Completed or inactive items for cold storage.
-* `4_Templates/`: Markdown boilerplate for notes and projects.
+* `3_Archives/`: Completed or inactive items.
+* `4_Templates/`: Markdown boilerplate.
 * `5_Daily/`: Chronological activity logs.
 
-## Usage
+## Features
 
-### Navigation and Linking
+### Template Automation
+Create new notes using templates located in `4_Templates/`.
+- **Command**: `:BasalNew`
+- **Placeholders**: The following strings are automatically replaced:
+  - `YYYY-MM-DD`: Current ISO date.
+  - `TITLE`: The filename/title of the note.
 
-The plugin configures Vim's `path` and `suffixesadd` to facilitate seamless navigation:
-* **File Links**: Use `gf` (go to file) over Markdown links like `[[note-name]]` or `[description](path/to/file.md)` to open the target.
-* **Global Search**: Press `F` over any word or `#tag` to execute a global search across the entire database.
+### Smart Daily Journaling
+Quickly access your daily log. If it doesn't exist, it is created using `4_Templates/daily.md` (if available).
+- **Command**: `:BasalDaily`
+- **Mapping**: `<leader>bd`
 
-### Commands
+### Navigation & Backlinks
+- **File Links**: Use `gf` over `[[note-name]]` or `[text](path.md)` to follow links.
+- **Backlinks**: Find all notes that link to the current buffer.
+  - **Command**: `:BasalBacklinks`
+  - **Mapping**: `<leader>bl`
+- **Tag Search**: Press `F` over any `#tag` to execute a global search.
+
+### Visual Polish
+Automatic syntax highlighting for `#tags` and `[[links]]` is applied to all files opened within the `$BASAL` directory.
+
+## Commands
 
 | Command | Description |
 | :--- | :--- |
-| `:BasalInit` | Initializes the brain structure in `g:basal_path`. |
-| `:BasalSearch [query]` | Performs a fuzzy search using `rg` within the brain directory. |
+| `:BasalInit` | Initializes the brain structure. |
+| `:BasalCheck` | Verifies dependencies (`rg`, `fzf`) and configuration. |
+| `:BasalNew` | Creates a new note from a template via `fzf`. |
+| `:BasalDaily` | Opens/creates the daily log for today. |
+| `:BasalBacklinks`| Searches for files linking to the current note. |
+| `:BasalSearch` | Performs a fuzzy search using `rg`. |
 
-### Default Mappings
+## Default Mappings
 
-The following mappings are active unless `g:basal_disable_mappings` is set to 1:
+Active unless `g:basal_disable_mappings` is set to 1:
 
 | Mapping | Action |
 | :--- | :--- |
 | `<leader>bb` | Open Index (`index.md`) |
 | `<leader>bt` | Open TODO list (`TODO.md`) |
-| `<leader>bd` | Open/Create Daily Log for the current date in `5_Daily/` |
-| `<leader>bs` | Invoke `:BasalSearch` |
-| `F` | Search for the word or `#tag` under the cursor |
+| `<leader>bd` | Open today's Daily Log |
+| `<leader>bn` | Create a new note from template |
+| `<leader>bs` | Interactive global search |
+| `<leader>bl` | Show backlinks for current file |
+| `F` | Search for the word or `#tag` under cursor |
 
 ## Configuration
 
 | Variable | Description | Default |
 | :--- | :--- | :--- |
-| `g:basal_path` | Absolute path to the database root. Sets `$BASAL`. | `~/Basal` |
-| `g:basal_disable_mappings` | Set to 1 to disable default keyboard mappings. | `0` |
-
-## Technical Implementation
-
-* **Search Engine**: Uses `rg` with `--column`, `--line-number`, and `--smart-case`. Querying for tags (starting with `#`) automatically enforces word boundaries (`\b`) to ensure precision.
-* **Interface**: Integrates with `fzf#vim#grep` and `fzf#vim#with_preview` for an interactive search experience.
-* **Environment**: Sets the `$BASAL` environment variable within the Vim process, allowing for easy integration with external scripts and shell commands.
-* **Performance**: Core logic is implemented in `autoload/` to ensure minimal impact on Vim startup time.
+| `g:basal_path` | Absolute path to the brain root. | `~/Basal` |
+| `g:basal_disable_mappings`| Set to 1 to disable mappings. | `0` |
