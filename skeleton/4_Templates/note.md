@@ -4,7 +4,7 @@ TAGS: #temp
 ## Meta
 - Created: YYYY-MM-DD
 - Area: [[area]]
-- Project: [[project]] (se aplicável)
+- Project: [[project]] (if applicable)
 - Source: 
 - Status: #Active
 
