@@ -134,9 +134,7 @@ function! basal#backlinks()
   let l:filename = fnamemodify(expand('%'), ':t:r')
   if empty(l:filename) | return | endif
 
-  " Use character classes for literals to avoid backslash escaping issues across layers
-  " Matches: [[filename]], (filename.md), or (filename)
-  let l:pattern = '[[]' . l:filename . '[]]|[(]' . l:filename . '[.]md[)]|[(]' . l:filename . '[)]'
+  let l:pattern = '\[\[' . l:filename . '\]\]|\(' . l:filename . '\.md\)|\(' . l:filename . '\)'
   call basal#search(l:pattern, 0)
 endfunction
 
