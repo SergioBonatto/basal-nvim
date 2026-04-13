@@ -93,7 +93,7 @@ function! s:create_from_template(template_name)
   let l:name = input('Note Name (e.g., area/topic): ')
   if empty(l:name) | return | endif
 
-  let l:path = expand($BASAL . '/' . l:name . '.md')
+  let l:path = expand($BASAL . '/6_Notes/' . l:name . '.md')
   if filereadable(l:path)
     echoerr "Basal: File already exists: " . l:path
     return
