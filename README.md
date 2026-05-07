@@ -1,35 +1,38 @@
-# basal.vim
+# basal-nvim
 
-`basal.vim` is a minimalist personal knowledge management (PKM) plugin for Vim. It implements a file-based Digital Brain using the P.A.R.A. (Projects, Areas, Resources, Archives) methodology, leveraging `ripgrep` and `fzf` for high-performance indexing and navigation.
+`basal-nvim` is a minimalist personal knowledge management (PKM) plugin for Neovim, rewritten in Lua. It implements a file-based Digital Brain using the P.A.R.A. (Projects, Areas, Resources, Archives) methodology, leveraging `ripgrep`, `fzf-lua`, and `nvim-treesitter` for high-performance indexing, navigation, and visual polish.
 
 ## Prerequisites
 
-The following tools must be installed and available in the system `PATH`:
+The following tools must be installed and available:
 
-* **Vim** or **Neovim**
+* **Neovim** (>= 0.8 recommended)
 * **ripgrep (rg)**: Required for global tag and content search.
-* **fzf**: Required for the fuzzy-finding interface.
-* **fzf.vim**: The Vim wrapper for fzf.
+* **fzf-lua**: Required for the fuzzy-finding interface.
+* **nvim-treesitter**: Required for advanced syntax highlighting.
 
 ## Installation
 
-Using `vim-plug`:
+Using `lazy.nvim`:
 
-```vim
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'SergioBonatto/basal.vim'
+```lua
+{
+  'SergioBonatto/basal-nvim',
+  dependencies = {
+    'ibhagwan/fzf-lua',
+    'nvim-treesitter/nvim-treesitter',
+  },
+  config = function()
+    require('basal').setup({
+      path = '~/Basal', -- Optional: default is ~/Basal
+    })
+  end
+}
 ```
 
 ## Initialization
 
-Define the root directory for the brain in the `.vimrc` (optional) and execute the initialization command:
-
-```vim
-let g:basal_path = '~/Basal'
-```
-
-Execute within Vim:
+Execute within Neovim:
 ```vim
 :BasalInit
 ```
@@ -67,27 +70,27 @@ Quickly access your daily log. If it doesn't exist, it is created using `4_Templ
 - **Tag Search**: Press `F` over any `#tag` to execute a global search.
 
 ### Visual Polish
-Automatic syntax highlighting for `#tags` and `[[links]]` is applied to all files opened within the `$BASAL` directory.
+Advanced syntax highlighting for `#tags` and `[[links]]` is provided by Treesitter queries and applied to all files opened within the `$BASAL` directory.
 
 ## Commands
 
 | Command | Description |
 | :--- | :--- |
 | `:BasalInit` | Initializes the brain structure. |
-| `:BasalCheck` | Verifies dependencies (`rg`, `fzf`) and configuration. |
-| `:BasalNew` | Creates a new note from a template via `fzf`. |
+| `:BasalCheck` | Verifies dependencies (`rg`, `fzf-lua`) and configuration. |
+| `:BasalNew` | Creates a new note from a template via `fzf-lua`. |
 | `:BasalDaily` | Opens/creates the daily log for today. |
 | `:BasalBacklinks`| Searches for files linking to the current note. |
-| `:BasalSearch` | Performs a fuzzy search using `rg`. |
+| `:BasalSearch` | Performs a fuzzy search using `rg` and `fzf-lua`. |
 
 ## Default Mappings
 
-Active unless `g:basal_disable_mappings` is set to 1:
+Active unless `disable_mappings = true` is set in `setup()`:
 
 | Mapping | Action |
 | :--- | :--- |
 | `<leader>bb` | Open Index (`index.md`) |
-| `<leader>bt` | Open TODO list (`TODO.md`) |
+| `<leader>bt" | Open TODO list (`TODO.md`) |
 | `<leader>bd` | Open today's Daily Log |
 | `<leader>bn` | Create a new note from template |
 | `<leader>bs` | Interactive global search |
@@ -96,7 +99,14 @@ Active unless `g:basal_disable_mappings` is set to 1:
 
 ## Configuration
 
-| Variable | Description | Default |
-| :--- | :--- | :--- |
-| `g:basal_path` | Absolute path to the brain root. | `~/Basal` |
-| `g:basal_disable_mappings`| Set to 1 to disable mappings. | `0` |
+Default options:
+
+```lua
+require('basal').setup({
+  path = vim.fn.expand("~/Basal"),
+  disable_mappings = false,
+  templates_dir = "4_Templates",
+  notes_dir = "6_Notes",
+  daily_dir = "5_Daily",
+})
+```
